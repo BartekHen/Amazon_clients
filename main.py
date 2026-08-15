@@ -15,7 +15,7 @@ def load_data(filepath, limit=5000):
             if i >= limit:
                 break
             label, text = line.strip().split(' ', 1)
-            # dataset format is fastText-style: __label__1 = negative review, __label__2 = positive
+            # __label__1 = negative, __label__2 = positive
             rating = int(label.replace('__label__', ''))
             reviews.append({'rating': rating, 'review_text': text})
 
@@ -36,8 +36,7 @@ def process_data(df):
     df['char_count'] = df['review_text'].apply(lambda x: len(str(x)))
     df['exclamation_count'] = df['review_text'].apply(lambda x: str(x).count('!'))
 
-    # sentiment_score is computed on the raw text, before cleaning, since
-    # punctuation and capitalization can carry emotional signal
+    # sentiment on raw text, cleaning happens after
     df['sentiment_score'] = df['review_text'].progress_apply(lambda x: TextBlob(str(x)).sentiment.polarity)
 
     df['clean_review'] = df['review_text'].progress_apply(clean_text_basic)
