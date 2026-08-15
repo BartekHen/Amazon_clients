@@ -1,37 +1,66 @@
-# Analiza Opinii Klientów (NLP) – Python & Power BI 📊🐍
+# Amazon Review Sentiment Analysis - Python & Power BI
 
-Ten projekt prezentuje kompleksowy proces ETL (Extract, Transform, Load) oraz analizę sentymentu opinii klientów sklepu internetowego. Łączy moc przetwarzania języka naturalnego w Pythonie z interaktywną wizualizacją w Power BI.
+A small NLP + BI portfolio project. A Python script turns raw Amazon
+product reviews into an enriched, feature-engineered dataset (sentiment
+score, review length, punctuation use), which a Power BI dashboard then
+uses to compare star ratings against actual review sentiment.
 
-Wykorzystane narzędzia i procesy:
-- **Python:** Pobieranie i czyszczenie danych, Inżynieria Cech (Feature Engineering), Analiza Sentymentu (NLP za pomocą TextBlob), generowanie chmur słów (WordCloud), eksport wzbogaconych danych.
-- **Power BI:** Interaktywny dashboard analityczny korelujący oceny klientów z faktycznym wydźwiękiem emocjonalnym ich wypowiedzi.
+## Data
 
-## 📂 Zawartość repozytorium
-- `main.py` – modułowy kod Pythona do przetwarzania tekstu, analizy NLP i eksportu.
-- `opinie_klientow.csv` – wygenerowany zbiór danych (zawiera m.in. oceny, wynik sentymentu, długość opinii, liczbę znaków interpunkcyjnych).
-- `analiza_opinii.pbix` – gotowy, interaktywny dashboard Power BI.
-- `wordcloud_positive.png` / `wordcloud_negative.png` – wygenerowane chmury słów dla skrajnych ocen.
+Source: [Kaggle - Amazon Reviews](https://www.kaggle.com/datasets/bittlingmayer/amazonreviews),
+a public dataset of Amazon product reviews labeled `__label__1` (negative)
+or `__label__2` (positive). It contains review text and ratings only - no
+customer names, emails or other personal data.
 
-## 📦 Dane
-Dane pochodzą z potężnego zbioru [Kaggle: Amazon Reviews](https://www.kaggle.com/datasets/bittlingmayer/amazonreviews). Skrypt automatycznie przetwarza próbkę tysięcy opinii, co pozwala na płynną analizę bez przeciążania pamięci.
+The raw file (`train.ft.txt.bz2`, ~500 MB) is not included in this repo.
+Download it from Kaggle and place it next to `main.py` before running the
+script - it reads the first 5000 labeled reviews by default.
 
-## 🚀 Jak uruchomić?
+`opinie_klientow.csv` is committed as a ready-to-use sample so the Power BI
+dashboard opens with data out of the box. If you re-run `main.py`, it will
+be overwritten with a freshly processed batch.
 
-1. Zainstaluj wymagane biblioteki w środowisku Python 3:
-   ```bash
-   pip install pandas matplotlib wordcloud textblob tqdm
-   python main.py
+## Pipeline (`main.py`)
 
-   3. Otwórz plik `analiza_opinii.pbix` w programie **Power BI Desktop**.
-4. W razie potrzeby odśwież źródło danych, wskazując nowo wygenerowany plik `opinie_klientow.csv`.
+1. `load_data` - reads labeled reviews from the bz2 file into a DataFrame
+2. `process_data` - feature engineering: `word_count`, `char_count`,
+   `exclamation_count`, and `sentiment_score` (TextBlob polarity, -1 to 1,
+   computed on the raw text before cleaning)
+3. `generate_wordclouds` - builds word clouds for the best- and
+   worst-rated reviews
+4. `export_data` - writes the enriched dataset to CSV for Power BI
 
-## 📈 Prezentacja wyników (Możliwości Dashboardu Power BI)
-Dzięki wzbogaceniu danych w Pythonie, dashboard w Power BI prezentuje znacznie więcej niż tylko proste zliczenia:
+## Business questions the dashboard answers
 
-- **Rozkład ocen vs. Sentyment:** Wykres porównujący oficjalną ocenę klienta (Rating) z rzeczywistym nacechowaniem emocjonalnym tekstu (Sentiment Score od -1.0 do 1.0).
-- **Długość opinii (Word Count):** Analiza tego, czy niezadowoleni klienci piszą dłuższe i bardziej wyczerpujące recenzje.
-- **Wskaźnik "Furii" (Exclamation Count):** Korelacja użycia wykrzykników (`!!!`) z negatywnymi ocenami.
-- **Chmury Słów:** Wizualizacja najczęściej pojawiających się słów i fraz z podziałem na opinie pozytywne i negatywne.
+- Does the star rating agree with the actual sentiment of the review text?
+- Do negative reviews tend to be longer than positive ones?
+- Do angry customers use more exclamation marks?
+- Which words dominate positive vs. negative reviews?
 
----
-# Amazon_clients
+## Tech stack
+
+- **Python** - pandas, TextBlob (sentiment), WordCloud, tqdm
+- **Power BI** - interactive dashboard
+
+## Repository structure
+
+```
+main.py                 data loading, feature engineering, sentiment analysis
+opinie_klientow.csv     sample enriched dataset (see Data)
+*.pbix                  Power BI dashboard
+requirements.txt
+```
+
+## Quick start
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# download train.ft.txt.bz2 from the Kaggle link above and place it here
+python main.py
+
+# open the .pbix file in Power BI Desktop
+# to use freshly generated data, refresh the source pointing at opinie_klientow.csv
+```
