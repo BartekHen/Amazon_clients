@@ -1,0 +1,17 @@
+# Raw dataset - download from Kaggle, see README
+train.ft.txt.bz2
+
+# Generated word cloud images - recreate with main.py
+wordcloud_positive.png
+wordcloud_negative.png
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
