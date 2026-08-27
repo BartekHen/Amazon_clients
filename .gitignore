@@ -1,6 +1,9 @@
 # Raw dataset - download from Kaggle, see README
 train.ft.txt.bz2
 
+# Generated DuckDB warehouse - recreate with src/load_to_db.py
+*.duckdb
+
 # Python
 __pycache__/
 *.pyc
