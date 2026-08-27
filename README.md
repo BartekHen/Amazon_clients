@@ -37,15 +37,33 @@ be overwritten with a freshly processed batch.
 - Do angry customers use more exclamation marks?
 - Which words dominate positive vs. negative reviews?
 
+## Example output
+
+No Power BI Desktop needed to see what this project produces:
+
+| | |
+|---|---|
+| ![Positive word cloud](docs/images/wordcloud_positive.png) | ![Negative word cloud](docs/images/wordcloud_negative.png) |
+| Most common words in positive reviews | Most common words in negative reviews |
+| ![Sentiment by rating](docs/images/sentiment_by_rating.png) | ![Word count by rating](docs/images/wordcount_by_label.png) |
+| Average sentiment is only slightly positive for negative-labeled reviews and clearly positive for positive-labeled ones - TextBlob doesn't fully separate the two | Negative reviews run a bit longer on average than positive ones |
+
+Generate these yourself with `python main.py` (word clouds) and
+`python generate_charts.py` (the two bar charts, built directly from
+`opinie_klientow.csv`).
+
 ## Tech stack
 
-- **Python** - pandas, TextBlob (sentiment), WordCloud, tqdm
+- **Python** - pandas, TextBlob (sentiment), WordCloud, matplotlib, tqdm
 - **Power BI** - interactive dashboard
 
 ## Repository structure
 
 ```
-main.py                 data loading, feature engineering, sentiment analysis
+main.py                 data loading, feature engineering, sentiment analysis, word clouds
+generate_charts.py      sentiment/word-count bar charts, built from opinie_klientow.csv
+docs/
+  images/                 word clouds and charts embedded above
 opinie_klientow.csv     sample enriched dataset (see Data)
 *.pbix                  Power BI dashboard
 requirements.txt
@@ -60,6 +78,9 @@ pip install -r requirements.txt
 
 # download train.ft.txt.bz2 from the Kaggle link above and place it here
 python main.py
+
+# optional: bar charts built from opinie_klientow.csv
+python generate_charts.py
 
 # open the .pbix file in Power BI Desktop
 # to use freshly generated data, refresh the source pointing at opinie_klientow.csv
