@@ -52,9 +52,27 @@ Generate these yourself with `python main.py` (word clouds) and
 `python generate_charts.py` (the two bar charts, built directly from
 `opinie_klientow.csv`).
 
+## SQL analysis
+
+`opinie_klientow.csv` can also be loaded into a small DuckDB database and
+queried with SQL:
+
+```bash
+python src/load_to_db.py                    # creates reviews.duckdb with a `reviews` table
+duckdb reviews.duckdb < sql/analysis_queries.sql
+```
+
+See `sql/analysis_queries.sql` for the full, runnable versions:
+
+- What's the average sentiment score for negative- vs. positive-labeled reviews?
+- Which reviews disagree the most between their label and their actual sentiment?
+- Do negative reviews use more exclamation marks than positive ones?
+- How is review length (short/medium/long) distributed across rating labels?
+
 ## Tech stack
 
 - **Python** - pandas, TextBlob (sentiment), WordCloud, matplotlib, tqdm
+- **DuckDB** - SQL analysis layer
 - **Power BI** - interactive dashboard
 
 ## Repository structure
@@ -62,6 +80,10 @@ Generate these yourself with `python main.py` (word clouds) and
 ```
 main.py                 data loading, feature engineering, sentiment analysis, word clouds
 generate_charts.py      sentiment/word-count bar charts, built from opinie_klientow.csv
+src/
+  load_to_db.py          loads opinie_klientow.csv into a DuckDB table
+sql/
+  analysis_queries.sql   example SQL analysis queries
 docs/
   images/                 word clouds and charts embedded above
 opinie_klientow.csv     sample enriched dataset (see Data)
@@ -79,8 +101,10 @@ pip install -r requirements.txt
 # download train.ft.txt.bz2 from the Kaggle link above and place it here
 python main.py
 
-# optional: bar charts built from opinie_klientow.csv
+# optional: bar charts and SQL analysis, built from opinie_klientow.csv
 python generate_charts.py
+python src/load_to_db.py
+duckdb reviews.duckdb < sql/analysis_queries.sql
 
 # open the .pbix file in Power BI Desktop
 # to use freshly generated data, refresh the source pointing at opinie_klientow.csv
