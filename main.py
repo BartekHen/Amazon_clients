@@ -1,10 +1,13 @@
 import bz2
+import os
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 from textblob import TextBlob
 from tqdm import tqdm
+
+IMAGES_DIR = 'docs/images'
 
 def load_data(filepath, limit=5000):
     reviews = []
@@ -45,6 +48,7 @@ def process_data(df):
 
 def generate_wordclouds(df):
     print("\nGenerating word clouds...")
+    os.makedirs(IMAGES_DIR, exist_ok=True)
 
     custom_stopwords = set(STOPWORDS)
     custom_stopwords.update([
@@ -69,9 +73,9 @@ def generate_wordclouds(df):
         plt.imshow(wordcloud_pos, interpolation='bilinear')
         plt.axis('off')
         plt.title(f'Most common words in {pos_rating}-star reviews')
-        plt.savefig('wordcloud_positive.png', bbox_inches='tight')
+        plt.savefig(f'{IMAGES_DIR}/wordcloud_positive.png', bbox_inches='tight')
         plt.close()
-        print(" -> Saved: wordcloud_positive.png")
+        print(f" -> Saved: {IMAGES_DIR}/wordcloud_positive.png")
 
     if negative_text.strip():
         wordcloud_neg = WordCloud(width=900, height=400, background_color='black',
@@ -80,9 +84,9 @@ def generate_wordclouds(df):
         plt.imshow(wordcloud_neg, interpolation='bilinear')
         plt.axis('off')
         plt.title(f'Most common words in {neg_rating}-star reviews')
-        plt.savefig('wordcloud_negative.png', bbox_inches='tight')
+        plt.savefig(f'{IMAGES_DIR}/wordcloud_negative.png', bbox_inches='tight')
         plt.close()
-        print(" -> Saved: wordcloud_negative.png")
+        print(f" -> Saved: {IMAGES_DIR}/wordcloud_negative.png")
 
 def export_data(df, filename='opinie_klientow.csv'):
     cols_to_export = [
